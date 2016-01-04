@@ -1,0 +1,26 @@
+{
+  "name": "mysql-http-client",
+  "version": "0.0.1",
+  "description": "MySQL client, which speak json.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com/toyamarinyon/mysql-http-client"
+  },
+  "author": "toyamarinyon",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^1.2.0",
+    "mysql": "^2.10.0",
+    "restify": "^4.0.3"
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.26",
+    "babel-preset-es2015": "^6.3.13",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.1"
+  }
+}
