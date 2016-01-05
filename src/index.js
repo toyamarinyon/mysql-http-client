@@ -10,34 +10,54 @@ const connection = mysql.createConnection({
   password : process.env.DATABASE_PASSWORD,
   database : process.env.DATABASE_NAME
 })
-
-const server = restify.createServer({
-  name: 'myapp',
-  version: '1.0.0'
-})
-
-server.use(restify.acceptParser(server.acceptable))
-server.use(restify.queryParser())
-server.use(restify.bodyParser())
-server.get('/echo/:name', (req, res, next) => {
-  res.send(req.params);
-  return next();
-})
-
 connection.connect()
 
+const run_query = (sql) => {
+  const execute_datetime = new Date()
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, rows) => {
+      if (err) {
+        reject(err)
+      }
+      const executed_datetime = new Date()
+      const result = {
+        execution_time: executed_datetime - execute_datetime,
+        num_rows: rows.length,
+        rows: rows
+      }
 
-// server.listen(8080, function () {
-//     console.log('%s listening at %s', server.name, server.url);
-// });
+      resolve(result)
+    })
+  })
+}
 
-connection.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-  if (err) {
-    console.log(err.message)
-    return
-  }
-  console.log(rows)
-  console.log(fields)
+const server = restify.createServer({
+  name: 'mysql-http-client',
+  version: '0.0.1'
 })
+server
+  .use(restify.acceptParser(server.acceptable))
+  .use(restify.queryParser())
+  .use(restify.bodyParser())
 
-connection.end()
+server
+  .post('/query/', (req, res, next) => {
+    run_query('SELECT * FROM UserData LIMIT 2')
+        .then((result) => console.log(result))
+        .then(next())
+  })
+
+
+server.listen(8080, function () {
+    console.log('%s listening at %s', server.name, server.url);
+});
+
+// connection.query('SELECT * FROM UserData LIMIT 2', function(err, result, fields) {
+//   if (err) {
+//     console.log(err.message)
+//     return
+//   }
+//   console.log(result.length)
+//   console.log(fields)
+// })
+
