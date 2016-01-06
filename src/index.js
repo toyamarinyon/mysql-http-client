@@ -21,7 +21,7 @@ const run_query = (sql) => {
       }
       const executed_datetime = new Date()
       const result = {
-        execution_time: executed_datetime - execute_datetime,
+        execution_time_ms: executed_datetime - execute_datetime,
         num_rows: rows.length,
         rows: rows
       }
@@ -42,22 +42,12 @@ server
 
 server
   .post('/query/', (req, res, next) => {
-    run_query('SELECT * FROM UserData LIMIT 2')
-        .then((result) => console.log(result))
+    run_query(req.params.sql)
+        .then((result) => res.send(result))
+        .catch((err) => res.send(err))
         .then(next())
   })
-
 
 server.listen(8080, function () {
     console.log('%s listening at %s', server.name, server.url);
 });
-
-// connection.query('SELECT * FROM UserData LIMIT 2', function(err, result, fields) {
-//   if (err) {
-//     console.log(err.message)
-//     return
-//   }
-//   console.log(result.length)
-//   console.log(fields)
-// })
-
